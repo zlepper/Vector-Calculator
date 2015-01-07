@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap-theme.css">
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="calculator.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+    <h1>Inputs</h1>
+    <hr>
+    <form>
+        <div class="form-group">
+            <label for="Vx">Vector V værdi x</label>
+            <input type="number" class="form-control" id="Vx" placeholder="Eks. 7" onchange="validate('Vx')">
+        </div>
+        <div class="form-group">
+            <label for="Vy">Vector V værdi y</label>
+            <input type="number" class="form-control" id="Vy" placeholder="Eks. 8" onchange="validate('Vy');">
+        </div>
+        <div class="form-group">
+            <label for="Vx">Vector W værdi x</label>
+            <input type="number" class="form-control" id="Wx" placeholder="Eks. 7" onchange="validate('Wx');">
+        </div>
+        <div class="form-group">
+            <label for="Vy">Vector W værdi y</label>
+            <input type="number" class="form-control" id="Wy" placeholder="Eks. 8" onchange="validate('Wy');">
+        </div>
+    </form>
+    <h1>Resulater</h1>
+    <hr>
+    <form>
+        <div class="form-group">
+            <label class="sr-only" for="results">Resultater</label>
+            <input type="text" class="form-control" id="results" readonly>
+        </div>
+    </form>
+</div>
+</body>
+</html>
