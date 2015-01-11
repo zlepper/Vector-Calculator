@@ -67,6 +67,9 @@ function areAllFilled() {
 }
 
 function calculate() {
+
+    var results = jQuery(".results");
+    results.empty();
     // Find alle værdier i inputfelterne
     var tmp = document.getElementById('Vx');
     var Vx = Number(tmp.value);
@@ -82,33 +85,40 @@ function calculate() {
     //console.log(VLength);
     var WLength = calculateLength(Wx, Wy);
     //console.log(WLength);
-    var r = "Længden af vektor V: " + roundToTwo(VLength) + "\nLængden af vektor W: " + roundToTwo(WLength) + "\n";
-    var results = document.getElementById("results");
-    results.value = r;
+    results.append("<p>Længden af de to vektorer er: </p>$$|\\vec{v}| =" + roundToTwo(VLength) + "$$$$|\\vec{w}| = " + roundToTwo(WLength) + "$$");
 
     // Find den adderede vektor
     var Ux = Vx + Wx;
     var Uy = Vy + Wy;
-    results.value = results.value + "\nDen adderede vektor har en x-værdi på: " + roundToTwo(Ux) + "\n\t og en y-værdi på: " + roundToTwo(Uy);
+    var s = "<p>Den adderede vektor er: </p>$$\\vec{u} = \\vec{v} + \\vec{w} = \\binom{" + Vx + "+" + Wx + "}{" + Vy + "+" + Wy + "} = \\binom{" + Ux + "}{" + Uy + "} $$";
+    results.append(s);
     var ULength = calculateLength(Ux, Uy);
-    results.value += "\n\tDette giver en længde på: " + roundToTwo(ULength) + "\n";
+    s = "$$|\\vec{u}| = " + roundToTwo(ULength) + "$$";
+    results.append(s);
 
     // Find vektor differencen
     var Xdiff = Vx - Wx;
     var Ydiff = Vy - Wy;
-    results.value += "\nVektordifferencen for x er: " + roundToTwo(Xdiff) + "\n\tOg for y: " + roundToTwo(Ydiff) + "\n";
+    s = "<p>Vektor differencen er:</p>$$\\vec{a} = \\vec{v} - \\vec{w} = \\binom{" + Vx + "-" + Wx + "}{" + Vy + "-" + Wy + "} = \\binom{" + Xdiff + "}{" + Ydiff + "}$$";
+    results.append(s);
 
     // Find prikproduktet
-    var point = Vx * Vy + Wx + Wy;
-    results.value += "\nSkalarproduktet af de to vektorer er: " + roundToTwo(point) + "\n";
+    var point = Vx * Vy + Wx * Wy;
+    s = "<p>Skalaerproduktet er:</p>$$r = \\vec{v} \\bullet \\vec{w} = " + Vx + "\\cdot" + Vy + "+" + Wx + "\\cdot" + Wy + "=" + point + "$$";
+    results.append(s);
 
     // Find vinklen mellem de to vektorer
     var angle = getDegrees(Math.acos(point / (VLength * WLength)));
-    results.value += "\nVinkelen mellem de to vektorer er: " + roundToTwo(angle) + "\n";
+    s = "<p>Vinkelen mellem de to vektorer er:</p>$$" + "\\alpha = \\arccos \\left (\\frac{" + roundToTwo(point) + "}{" + roundToTwo(VLength) + "\\cdot" + roundToTwo(WLength) + "} \\right) =" + roundToTwo(angle) + "&deg$$";
+    results.append(s);
+    //results.innerHTML += "\nVinkelen mellem de to vektorer er: " + roundToTwo(angle) + "\n";
 
     // Tjek om de to vinkler er ortogonalle
-    if(point == 0) {
-        results.value += "\tVektorerne er ortogonalle på hindanden\n";
+    if(angle == 90) {
+        results.append("<p>Vektorerne er ortogonale på hindanden.</p>")
+        //results.innerHTML += "\tVektorerne er ortogonalle på hindanden\n";
+    } else {
+        results.append("<p>Vektorerne er ikke ortogonale på hindanden</p>")
     }
 
     // Find den projekterede vektor på V
@@ -117,7 +127,8 @@ function calculate() {
 
     // Find den projekterede vektor på W
 
-
+    // Formatér til matematik
+    MathJax.Hub.Typeset();
 }
 
 function calculateLength(x,y) {
