@@ -67,7 +67,6 @@ function areAllFilled() {
 }
 
 function calculate() {
-
     var results = jQuery(".results");
     results.empty();
     // Find alle værdier i inputfelterne
@@ -85,7 +84,64 @@ function calculate() {
     //console.log(VLength);
     var WLength = calculateLength(Wx, Wy);
     //console.log(WLength);
-    results.append("<p>Længden af de to vektorer er: </p>$$|\\vec{v}| =" + roundToTwo(VLength) + "$$$$|\\vec{w}| = " + roundToTwo(WLength) + "$$");
+    results.append("<p>Længden af de to vektorer er: </p>$$|\\vec{v}| =" + roundToTwo(VLength) + "$$<canvas width='130' height='110' id='vectorVLength'></canvas>$$|\\vec{w}| = " + roundToTwo(WLength) + "$$<canvas width='130' height='110' id='vectorWLength'></canvas>");
+    //canvas_arrow("vectorVLength", 10, 10, 10+Vx, 10, true);
+    // Work for drawing vector V
+    var canvasId = "vectorVLength";
+    if(Vy < 0) {
+        translate_canvas(canvasId, 0 , -1*document.getElementById(canvasId).height +10);
+    } else {
+        translate_canvas(canvasId, 0 , -10);
+    }
+    if(Vx < 0) {
+        translate_canvas(canvasId, document.getElementById(canvasId).width -10, 0);
+    } else {
+        translate_canvas(canvasId, 10, 0);
+    }
+    var W = get_scaled_vector(Vx, Vy);
+    canvas_arrow(canvasId, 0, 0, W[0], 0, true);
+    canvas_arrow(canvasId, W[0], 0, W[0], W[1], false);
+    canvas_arrow(canvasId, 0, 0, W[0], W[1], false);
+    //draw_axis(canvasId);
+    if(Vy < 0) {
+        set_text(canvasId, 45, -10, Vx, true);
+    } else {
+        set_text(canvasId, 45, 0, Vx, true);
+    }
+    if(Vx < 0) {
+        set_text(canvasId, W[0] - 12, (W[1] / 2) - 10, Vy, false);
+    } else {
+        set_text(canvasId, W[0] + 12, (W[1] / 2) + 10, Vy, false);
+    }
+    set_text(canvasId, (W[0]/2)-15,(W[1]/2)+15, roundToTwo(VLength), false);
+    // Work for drawing vector W
+    canvasId = "vectorWLength";
+    if(Wy < 0) {
+        translate_canvas(canvasId, 0 , -1*document.getElementById(canvasId).height +10);
+    } else {
+        translate_canvas(canvasId, 0 , -10);
+    }
+    if(Wx < 0) {
+        translate_canvas(canvasId, document.getElementById(canvasId).width -10, 0);
+    } else {
+        translate_canvas(canvasId, 10, 0);
+    }
+    W = get_scaled_vector(Wx, Wy);
+    canvas_arrow(canvasId, 0, 0, W[0] + 0, 0, true);
+    canvas_arrow(canvasId, W[0], 0, W[0], W[1], false);
+    canvas_arrow(canvasId, 0, 0, W[0], W[1], false);
+    if(Wy < 0) {
+        set_text(canvasId, 45, -10, Wx, true);
+    } else {
+        set_text(canvasId, 45, 0, Wx, true);
+    }
+    if(Wx < 0) {
+        set_text(canvasId, W[0] - 12, (W[1] / 2) - 10, Wy, false);
+    } else {
+        set_text(canvasId, W[0] + 12, (W[1] / 2) + 10, Wy, false);
+    }
+    set_text(canvasId, W[0]+12, (W[1]/2)+10, Wy, false);
+    set_text(canvasId, (W[0]/2)-15,(W[1]/2)+15, roundToTwo(WLength), false);
 
     // Find den adderede vektor
     var Ux = Vx + Wx;
@@ -111,14 +167,12 @@ function calculate() {
     var angle = getDegrees(Math.acos(point / (VLength * WLength)));
     s = "<p>Vinkelen mellem de to vektorer er:</p>$$" + "\\alpha = \\arccos \\left (\\frac{" + roundToTwo(point) + "}{" + roundToTwo(VLength) + "\\cdot" + roundToTwo(WLength) + "} \\right) =" + roundToTwo(angle) + "&deg$$";
     results.append(s);
-    //results.innerHTML += "\nVinkelen mellem de to vektorer er: " + roundToTwo(angle) + "\n";
 
     // Tjek om de to vinkler er ortogonalle
     if(angle == 90) {
-        results.append("<p>Vektorerne er ortogonale på hindanden.</p>")
-        //results.innerHTML += "\tVektorerne er ortogonalle på hindanden\n";
+        results.append("<p>Vektorerne er ortogonale på hindanden.</p>");
     } else {
-        results.append("<p>Vektorerne er ikke ortogonale på hindanden</p>")
+        results.append("<p>Vektorerne er ikke ortogonale på hindanden</p>");
     }
 
     // Find den projekterede vektor på V
