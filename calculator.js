@@ -107,7 +107,7 @@ function calculate() {
     // Work for drawing vector W
     canvasId = "vectorWLength";
     if(Wy < 0) {
-        translate_canvas(canvasId, 0 , -1*document.getElementById(canvasId).height +10);
+        translate_canvas(canvasId, 0 , -1*document.getElementById(canvasId).height +10);57
     } else {
         translate_canvas(canvasId, 0 , -10);
     }
@@ -161,7 +161,7 @@ function calculate() {
     var Ydiff = Vy - Wy;
     s = "<p>Vektor differencen er:</p>$$\\vec{a} = \\vec{v} - \\vec{w} = \\binom{" + Vx + "-" + Wx + "}{" + Vy + "-" + Wy + "} = \\binom{" + Xdiff + "}{" + Ydiff + "}$$<canvas width='130' height='110' id='differenceredeVector'></canvas>";
     results.append(s);
-    W = get_scaled_vector()
+    //W = get_scaled_vector()
     canvasId = "differenceredeVector";
     canvas_arrow(canvasId, 0, 0, Vx, Vy, true);
     canvas_arrow(canvasId, 0, 0, Wx, Wy, false);
@@ -191,6 +191,45 @@ function calculate() {
 
     // Find den projekterede vektor på W
 
+
+    // Parametiśer vektorerne
+    // Først med V som førstevektor
+    var yKryds = Vy-(Wy * (Vx/Wx));
+    console.log(yKryds);
+    results.append("<p>Parametisering: $$\\binom{x}{y} = \\binom{" + Vx + "}{" + Vy + "}+t \\cdot \\binom{" + Wx + "}{" + Wy + "}$$</p><p>Y krydses i: $$" + Vy + "-" + Wy + "\\cdot \\frac{" + Vx + "}{" + Wx + "} = " + yKryds + "$$</p><canvas width='220' height='220' id='param1'></canvas>");
+    canvasId = "param1";
+    translate_canvas(canvasId, 110,110);
+    scale_canvas(canvasId);
+    draw_axis(canvasId);
+    var u = get_scaled_vector(Math.abs(Vx) + Math.abs(Wx), Math.abs(Vy) + Math.abs(Wy));
+    var o = [Vx/u[2], Vy/u[2], Wx/u[2], Wy/u[2]];
+    var m = get_scaled_double_vector(o[2]*-1, o[3]*-1, o[2], o[3], 400);
+    /*console.log(m[0]);
+    console.log(m[1]);
+    console.log(m[2]);
+    console.log(m[3]);*/
+    canvas_line(canvasId, o[0] + m[0], o[1] + m[1], o[0] + m[2], o[1] + m[3]);
+    canvas_arrow(canvasId, 0,0, o[0], o[1], false, "#ff0000");
+    canvas_arrow(canvasId, o[0], o[1], o[0] + o[2], o[1] + o[3], false, "#00ff00");
+
+    // Dernæst med W som førstevektor
+    yKryds = Wy-(Vy * (Wx/Vx));
+    console.log(yKryds);
+    results.append("<p>Parametisering: $$\\binom{x}{y} = \\binom{" + Wx + "}{" + Wy + "}+t \\cdot \\binom{" + Vx + "}{" + Vy + "}$$</p><p>Y krydses i: $$" + Wy + "-" + Vy + "\\cdot \\frac{" + Wx + "}{" + Vx + "} = " + yKryds + "$$</p><canvas width='220' height='220' id='param2'></canvas>");
+    canvasId = "param2";
+    translate_canvas(canvasId, 110,110);
+    scale_canvas(canvasId);
+    draw_axis(canvasId);
+    u = get_scaled_vector(Math.abs(Vx) + Math.abs(Wx), Math.abs(Vy) + Math.abs(Wy));
+    o = [Wx/u[2], Wy/u[2], Vx/u[2], Vy/u[2]];
+    m = get_scaled_double_vector(o[2]*-1, o[3]*-1, o[2], o[3], 400);
+    /*console.log(m[0]);
+    console.log(m[1]);
+    console.log(m[2]);
+    console.log(m[3]);*/
+    canvas_line(canvasId, o[0] + m[0], o[1] + m[1], o[0] + m[2], o[1] + m[3]);
+    canvas_arrow(canvasId, 0,0, o[0], o[1], false, "#ff0000");
+    canvas_arrow(canvasId, o[0], o[1], o[0] + o[2], o[1] + o[3], false, "#00ff00");
     // Formatér til matematik
     MathJax.Hub.Typeset();
 }
