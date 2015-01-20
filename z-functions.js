@@ -23,6 +23,12 @@ function translate_canvas_X(id, positive) {
     }
 }
 
+function scale_canvas(id) {
+    var c = document.getElementById(id);
+    var ctx = c.getContext("2d");
+    ctx.scale(1,-1);
+}
+
 function translate_canvas(id, amountX, amountY){
     var c = document.getElementById(id);
     var ctx = c.getContext("2d");
@@ -49,10 +55,11 @@ function draw_axis(id) {
     ctx.lineTo(300,0);
     ctx.moveTo(0,300);
     ctx.lineTo(0,-300);
+    ctx.strokeStyle = "#000000";
     ctx.stroke();
 }
 
-function canvas_arrow(id, fromx, fromy, tox, toy, orientation){
+function canvas_arrow(id, fromx, fromy, tox, toy, orientation, color){
     var headlen = 10;   // length of head in pixels
     //console.log("Drawing from " + fromx + ", " + fromy);
     //console.log("Drawing to " + tox + ", " + toy);
@@ -69,6 +76,9 @@ function canvas_arrow(id, fromx, fromy, tox, toy, orientation){
     context.lineTo(tox-headlen*Math.cos(angle-Math.PI/6), toy-headlen*Math.sin(angle-Math.PI/6));
     context.moveTo(tox, toy);
     context.lineTo(tox-headlen*Math.cos(angle+Math.PI/6), toy-headlen*Math.sin(angle+Math.PI/6));
+    if(color != null) {
+        context.strokeStyle = color;
+    }
     context.stroke();
 }
 
@@ -79,12 +89,13 @@ function get_scaled_vector(Vx, Vy) {
     } else {
         s = Math.abs(Vy)/90;
     }
-    //console.log("s: " + s);
     var Wx = Vx/s;
-    //console.log("Wx: " + Wx);
     var Wy = Vy/s;
-    //console.log("Wy: " + Wy);
-    return [Wx, Wy];
+    return [Wx, Wy, s];
+}
+
+function get_scaled_double_vector(Vx, Vy, Wx, Wy) {
+
 }
 
 function set_text(id, posx, posy, text, orientation) {

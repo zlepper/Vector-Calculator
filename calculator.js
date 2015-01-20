@@ -99,21 +99,11 @@ function calculate() {
         translate_canvas(canvasId, 10, 0);
     }
     var W = get_scaled_vector(Vx, Vy);
-    canvas_arrow(canvasId, 0, 0, W[0], 0, true);
-    canvas_arrow(canvasId, W[0], 0, W[0], W[1], false);
-    canvas_arrow(canvasId, 0, 0, W[0], W[1], false);
-    //draw_axis(canvasId);
-    if(Vy < 0) {
-        set_text(canvasId, 45, -10, Vx, true);
-    } else {
-        set_text(canvasId, 45, 0, Vx, true);
-    }
-    if(Vx < 0) {
-        set_text(canvasId, W[0] - 12, (W[1] / 2) - 10, Vy, false);
-    } else {
-        set_text(canvasId, W[0] + 12, (W[1] / 2) + 10, Vy, false);
-    }
-    set_text(canvasId, (W[0]/2)-15,(W[1]/2)+15, roundToTwo(VLength), false);
+    results.append("<p></p>");
+    canvas_arrow(canvasId, 0, 0, W[0], 0, true, "#ff0000");
+    canvas_arrow(canvasId, W[0], 0, W[0], W[1], false, "#00ff00");
+    canvas_arrow(canvasId, 0, 0, W[0], W[1], false, "#0000ff");
+
     // Work for drawing vector W
     canvasId = "vectorWLength";
     if(Wy < 0) {
@@ -127,10 +117,10 @@ function calculate() {
         translate_canvas(canvasId, 10, 0);
     }
     W = get_scaled_vector(Wx, Wy);
-    canvas_arrow(canvasId, 0, 0, W[0] + 0, 0, true);
-    canvas_arrow(canvasId, W[0], 0, W[0], W[1], false);
-    canvas_arrow(canvasId, 0, 0, W[0], W[1], false);
-    if(Wy < 0) {
+    canvas_arrow(canvasId, 0, 0, W[0] + 0, 0, true, "#ff0000");
+    canvas_arrow(canvasId, W[0], 0, W[0], W[1], false, "#00ff00");
+    canvas_arrow(canvasId, 0, 0, W[0], W[1], false, "#0000ff");
+    /*if(Wy < 0) {
         set_text(canvasId, 45, -10, Wx, true);
     } else {
         set_text(canvasId, 45, 0, Wx, true);
@@ -141,26 +131,46 @@ function calculate() {
         set_text(canvasId, W[0] + 12, (W[1] / 2) + 10, Wy, false);
     }
     set_text(canvasId, W[0]+12, (W[1]/2)+10, Wy, false);
-    set_text(canvasId, (W[0]/2)-15,(W[1]/2)+15, roundToTwo(WLength), false);
+    set_text(canvasId, (W[0]/2)-15,(W[1]/2)+15, roundToTwo(WLength), false);*/
 
     // Find den adderede vektor
     var Ux = Vx + Wx;
     var Uy = Vy + Wy;
-    var s = "<p>Den adderede vektor er: </p>$$\\vec{u} = \\vec{v} + \\vec{w} = \\binom{" + Vx + "+" + Wx + "}{" + Vy + "+" + Wy + "} = \\binom{" + Ux + "}{" + Uy + "} $$";
+    var s = "<p>Den adderede vektor er: </p>$$\\vec{u} = \\vec{v} + \\vec{w} = \\binom{" + Vx + "+" + Wx + "}{" + Vy + "+" + Wy + "} = \\binom{" + Ux + "}{" + Uy + "} $$<canvas width='230' height='210' id='adderedeVector'></canvas>";
     results.append(s);
     var ULength = calculateLength(Ux, Uy);
     s = "$$|\\vec{u}| = " + roundToTwo(ULength) + "$$";
     results.append(s);
+    canvasId = "adderedeVector";
+    results.append("<p>Grøn V</p>")
+    scale_canvas(canvasId)
+    translate_canvas(canvasId, 105, -115)
+    W = get_scaled_vector(Vx+Wx, Vy, Wy);
+    var tmpVx = Vx/W[2];
+    var tmpVy = Vy/W[2];
+    var tmpWx = Wx/W[2];
+    var tmpWy = Wy/W[2];
+    canvas_arrow(canvasId, 0,0,tmpVx, tmpVy, false, "#ff0000");
+    canvas_arrow(canvasId, tmpVx, tmpVy, tmpVx+tmpWx, tmpVy+tmpWy, false, "#00ff00");
+    canvas_arrow(canvasId, 0, 0, tmpVx+tmpWx, tmpVy+tmpWy, false, "#0000ff");
+    draw_axis(canvasId)
+
 
     // Find vektor differencen
     var Xdiff = Vx - Wx;
     var Ydiff = Vy - Wy;
-    s = "<p>Vektor differencen er:</p>$$\\vec{a} = \\vec{v} - \\vec{w} = \\binom{" + Vx + "-" + Wx + "}{" + Vy + "-" + Wy + "} = \\binom{" + Xdiff + "}{" + Ydiff + "}$$";
+    s = "<p>Vektor differencen er:</p>$$\\vec{a} = \\vec{v} - \\vec{w} = \\binom{" + Vx + "-" + Wx + "}{" + Vy + "-" + Wy + "} = \\binom{" + Xdiff + "}{" + Ydiff + "}$$<canvas width='130' height='110' id='differenceredeVector'></canvas>";
     results.append(s);
+    W = get_scaled_vector()
+    canvasId = "differenceredeVector";
+    canvas_arrow(canvasId, 0, 0, Vx, Vy, true);
+    canvas_arrow(canvasId, 0, 0, Wx, Wy, false);
+    canvas_arrow(canvasId, Vx, Vy, Wx, Wy, false);
+
 
     // Find prikproduktet
-    var point = Vx * Vy + Wx * Wy;
-    s = "<p>Skalaerproduktet er:</p>$$r = \\vec{v} \\bullet \\vec{w} = " + Vx + "\\cdot" + Vy + "+" + Wx + "\\cdot" + Wy + "=" + point + "$$";
+    var point = Vx * Wx + Vy * Wy;
+    s = "<p>Skalaerproduktet er:</p>$$r = \\vec{v} \\bullet \\vec{w} = " + Vx + "\\cdot" + Wx + "+" + Vy + "\\cdot" + Wy + "=" + point + "$$";
     results.append(s);
 
     // Find vinklen mellem de to vektorer
