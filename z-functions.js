@@ -45,14 +45,8 @@ function translate_canvas_Y(id, positive) {
 
 function draw_axis(id) {
     var c = document.getElementById(id);
-    var ctx = c.getContext("2d");
-    ctx.beginPath();
-    ctx.moveTo(-300,0);
-    ctx.lineTo(300,0);
-    ctx.moveTo(0,300);
-    ctx.lineTo(0,-300);
-    ctx.strokeStyle = "#000000";
-    ctx.stroke();
+    canvas_arrow(id, -1*c.width/2, 0, c.width/2, 0, false, "#000000");
+    canvas_arrow(id,0, -1*c.height/2, 0, c.height/2, false, "#000000");
 }
 
 function canvas_arrow(id, fromx, fromy, tox, toy, orientation, color){
@@ -135,7 +129,7 @@ function get_scaled_double_vector(Vx, Vy, Wx, Wy, scalar) {
             }
         }
     } else {
-        if(Math.abs(Vx) > Math.abs(Vy)) {
+        if(Math.abs(Wx) > Math.abs(Wy)) {
             if(scalar == undefined) {
                 s = Math.abs(Wx) / 90;
             } else {
@@ -161,4 +155,29 @@ function set_text(id, posx, posy, text, orientation) {
         context.scale(1, -1);
     }
     context.fillText(text, posx, -1*posy);
+}
+
+function draw_arc(id, x, y, radius, startAngle, endAngle) {
+    var canvas = document.getElementById(id);
+    var context = canvas.getContext('2d');
+    var counterClockwise = false;
+    context.beginPath();
+    context.arc(x, y, radius, startAngle, endAngle, counterClockwise);
+    context.strokeStyle = 'black';
+    context.stroke();
+}
+
+function draw_circle(id, radius) {
+    var canvas = document.getElementById(id);
+    var context = canvas.getContext("2d");
+    context.beginPath();
+    context.arc(0,0, radius, 0, 2*Math.PI);
+    context.strokeStyle = 'black';
+    context.stroke();
+}
+
+function prepare_canvas(id) {
+    translate_canvas(id, 105, 105);
+    scale_canvas(id, 1,-1);
+    draw_axis(id);
 }

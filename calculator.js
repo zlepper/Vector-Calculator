@@ -67,6 +67,7 @@ function areAllFilled() {
 }
 
 function calculate() {
+    "use strict";
     var results = jQuery(".results");
     results.empty();
     // Find alle værdier i inputfelterne
@@ -84,7 +85,7 @@ function calculate() {
     //console.log(VLength);
     var WLength = calculateLength(Wx, Wy);
     //console.log(WLength);
-    results.append("<p>Længden af de to vektorer er: </p>$$|\\vec{v}| =" + roundToTwo(VLength) + "$$<canvas width='130' height='110' id='vectorVLength'></canvas>$$|\\vec{w}| = " + roundToTwo(WLength) + "$$<canvas width='130' height='110' id='vectorWLength'></canvas>");
+    results.append("<h2>Længder</h2><hr>$$|\\vec{v}| =" + roundToTwo(VLength) + "$$<canvas width='130' height='110' id='vectorVLength'></canvas>$$|\\vec{w}| = " + roundToTwo(WLength) + "$$<canvas width='130' height='110' id='vectorWLength'></canvas>");
     //canvas_arrow("vectorVLength", 10, 10, 10+Vx, 10, true);
     // Work for drawing vector V
     var canvasId = "vectorVLength";
@@ -120,63 +121,55 @@ function calculate() {
     canvas_arrow(canvasId, 0, 0, W[0] + 0, 0, true, "#ff0000");
     canvas_arrow(canvasId, W[0], 0, W[0], W[1], false, "#00ff00");
     canvas_arrow(canvasId, 0, 0, W[0], W[1], false, "#0000ff");
-    /*if(Wy < 0) {
-        set_text(canvasId, 45, -10, Wx, true);
-    } else {
-        set_text(canvasId, 45, 0, Wx, true);
-    }
-    if(Wx < 0) {
-        set_text(canvasId, W[0] - 12, (W[1] / 2) - 10, Wy, false);
-    } else {
-        set_text(canvasId, W[0] + 12, (W[1] / 2) + 10, Wy, false);
-    }
-    set_text(canvasId, W[0]+12, (W[1]/2)+10, Wy, false);
-    set_text(canvasId, (W[0]/2)-15,(W[1]/2)+15, roundToTwo(WLength), false);*/
 
     // Find den adderede vektor
     var Ux = Vx + Wx;
     var Uy = Vy + Wy;
-    var s = "<p>Den adderede vektor er: </p>$$\\vec{u} = \\vec{v} + \\vec{w} = \\binom{" + Vx + "+" + Wx + "}{" + Vy + "+" + Wy + "} = \\binom{" + Ux + "}{" + Uy + "} $$<canvas width='230' height='210' id='adderedeVector'></canvas>";
+    var s = "<h2>Vektoraddition</h2><hr>$$\\vec{u} = \\vec{v} + \\vec{w} = \\binom{" + Vx + "+(" + Wx + ")}{" + Vy + "+(" + Wy + ")} = \\binom{" + Ux + "}{" + Uy + "} $$<canvas width='210' height='210' id='adderedeVector'></canvas>";
     results.append(s);
     var ULength = calculateLength(Ux, Uy);
     s = "$$|\\vec{u}| = " + roundToTwo(ULength) + "$$";
     results.append(s);
     canvasId = "adderedeVector";
-    results.append("<p>Grøn V</p>")
-    scale_canvas(canvasId)
-    translate_canvas(canvasId, 105, -115)
-    W = get_scaled_vector(Vx+Wx, Vy, Wy);
-    var tmpVx = Vx/W[2];
-    var tmpVy = Vy/W[2];
-    var tmpWx = Wx/W[2];
-    var tmpWy = Wy/W[2];
-    canvas_arrow(canvasId, 0,0,tmpVx, tmpVy, false, "#ff0000");
-    canvas_arrow(canvasId, tmpVx, tmpVy, tmpVx+tmpWx, tmpVy+tmpWy, false, "#00ff00");
-    canvas_arrow(canvasId, 0, 0, tmpVx+tmpWx, tmpVy+tmpWy, false, "#0000ff");
-    draw_axis(canvasId)
+    results.append("<p>Grøn V</p>");
+    prepare_canvas(canvasId);
+    var u = get_scaled_vector(Math.abs(Vx) + Math.abs(Wx), Math.abs(Vy) + Math.abs(Wy));
+    var o = [Vx/u[2], Vy/u[2], Wx/u[2], Wy/u[2]];
+    canvas_arrow(canvasId, 0,0, o[0], o[1], false, "#ff0000");
+    canvas_arrow(canvasId, o[0], o[1], o[0] + o[2], o[1] + o[3], false, "#00ff00");
+    canvas_arrow(canvasId, 0,0, o[0] + o[2], o[1] + o[3], false, "#0000ff");
 
 
     // Find vektor differencen
     var Xdiff = Vx - Wx;
     var Ydiff = Vy - Wy;
-    s = "<p>Vektor differencen er:</p>$$\\vec{a} = \\vec{v} - \\vec{w} = \\binom{" + Vx + "-" + Wx + "}{" + Vy + "-" + Wy + "} = \\binom{" + Xdiff + "}{" + Ydiff + "}$$<canvas width='130' height='110' id='differenceredeVector'></canvas>";
+    s = "<h2>Vektordifferens</h2><hr>$$\\vec{a} = \\vec{v} - \\vec{w} = \\binom{" + Vx + "-(" + Wx + ")}{" + Vy + "-(" + Wy + ")} = \\binom{" + Xdiff + "}{" + Ydiff + "}$$<canvas width='210' height='210' id='differenceredeVector'></canvas>";
     results.append(s);
-    //W = get_scaled_vector()
+    W = get_scaled_double_vector(Vx, Vy, Wx, Wy);
     canvasId = "differenceredeVector";
-    canvas_arrow(canvasId, 0, 0, Vx, Vy, true);
-    canvas_arrow(canvasId, 0, 0, Wx, Wy, false);
-    canvas_arrow(canvasId, Vx, Vy, Wx, Wy, false);
+    prepare_canvas(canvasId);
+    canvas_arrow(canvasId, 0, 0, W[0], W[1], false, "#ff0000");
+    canvas_arrow(canvasId, 0, 0, W[2], W[3], false, "#00ff00");
+    canvas_arrow(canvasId, W[2], W[3], W[0], W[1],  false, "#0000ff");
 
 
     // Find prikproduktet
     var point = Vx * Wx + Vy * Wy;
-    s = "<p>Skalaerproduktet er:</p>$$r = \\vec{v} \\bullet \\vec{w} = " + Vx + "\\cdot" + Wx + "+" + Vy + "\\cdot" + Wy + "=" + point + "$$";
+    s = "<h2>Skalarprodukt</h2><hr>$$r = \\vec{v} \\bullet \\vec{w} = " + Vx + "\\cdot" + Wx + "+(" + Vy + "\\cdot" + Wy + ")=" + point + "$$";
     results.append(s);
 
     // Find vinklen mellem de to vektorer
     var angle = getDegrees(Math.acos(point / (VLength * WLength)));
-    s = "<p>Vinkelen mellem de to vektorer er:</p>$$" + "\\alpha = \\arccos \\left (\\frac{" + roundToTwo(point) + "}{" + roundToTwo(VLength) + "\\cdot" + roundToTwo(WLength) + "} \\right) =" + roundToTwo(angle) + "&deg$$";
+    s = "<h2>Vinkler mellem vektorer</h2><hr>$$" + "\\alpha = \\arccos \\left (\\frac{" + roundToTwo(point) + "}{" + roundToTwo(VLength) + "\\cdot" + roundToTwo(WLength) + "} \\right) =" + roundToTwo(angle) + "&deg$$<canvas height='210' width='210' id='angle'>Få dig en ny browser</canvas>";
     results.append(s);
+    canvasId = "angle";
+    prepare_canvas(canvasId);
+    canvas_arrow(canvasId, 0, 0, W[0], W[1], false, "#ff0000");
+    canvas_arrow(canvasId, 0, 0, W[2], W[3], false, "#00ff00");
+    var angleToDraw = Math.acos(Vx/VLength);
+    draw_arc(canvasId, 0, 0, 10, angleToDraw, getRadians(angle)+angleToDraw);
+
+
 
     // Tjek om de to vinkler er ortogonalle
     if(angle == 90) {
@@ -186,50 +179,110 @@ function calculate() {
     }
 
     // Find den projekterede vektor på V
-
+    var vProjx = point/(Math.pow(WLength, 2)) * Wx;
+    var vProjy = point/(Math.pow(WLength, 2)) * Wy;
+    results.append("<h2>Projektioner</h2><hr><p>V projekteret på W:</p>$$V_W = \\frac{V \\bullet W}{|\\vec{W}|^2} \\cdot W = \\frac{" + roundToTwo(point) + "}{" + roundToTwo(WLength) + "^2} \\cdot \\binom{" + Wx + "}{" + Wy + "} = \\binom{" + roundToTwo(vProjx) + "}{" + roundToTwo(vProjy) + "}$$<canvas height='210' width='210' id='vProjw'>Få dig en ny browser</canvas>");
+    canvasId = "vProjw";
+    prepare_canvas(canvasId);
+    W = get_scaled_double_vector(Vx, Vy, Wx, Wy, 70);
+    var vProjxs = vProjx/W[4];
+    var vProjys = vProjy/W[4];
+    canvas_arrow(canvasId, 0, 0, W[0], W[1], false, "#ff0000");
+    canvas_arrow(canvasId, 0, 0, W[2], W[3], false, "#00ff00");
+    canvas_arrow(canvasId, 0, 0, vProjxs, vProjys, false, "#0000ff");
 
 
     // Find den projekterede vektor på W
-
+    var wProjx = point/(Math.pow(VLength, 2)) * Vx;
+    var wProjy = point/(Math.pow(VLength, 2)) * Vy;
+    results.append("<p>W projekteret på V:</p>$$W_V = \\frac{W \\bullet V}{|\\vec{V}|^2} \\cdot V = \\frac{" + roundToTwo(point) + "}{" + roundToTwo(VLength) + "^2} \\cdot \\binom{" + Vx + "}{" + Vy + "} = \\binom{" + roundToTwo(wProjx) + "}{" + roundToTwo(wProjy) + "}$$<canvas height='210' width='210' id='wProjv'>Få dig en ny browser</canvas>");
+    canvasId = "wProjv";
+    prepare_canvas(canvasId);
+    W = get_scaled_double_vector(Vx, Vy, Wx, Wy, 70);
+    var wProjxs = wProjx/W[4];
+    var wProjys = wProjy/W[4];
+    canvas_arrow(canvasId, 0, 0, W[0], W[1], false, "#ff0000");
+    canvas_arrow(canvasId, 0, 0, W[2], W[3], false, "#00ff00");
+    canvas_arrow(canvasId, 0, 0, wProjxs, wProjys, false, "#0000ff");
 
     // Parametiśer vektorerne
     // Først med V som førstevektor
     var yKryds = Vy-(Wy * (Vx/Wx));
-    console.log(yKryds);
-    results.append("<p>Parametisering: $$\\binom{x}{y} = \\binom{" + Vx + "}{" + Vy + "}+t \\cdot \\binom{" + Wx + "}{" + Wy + "}$$</p><p>Y krydses i: $$" + Vy + "-" + Wy + "\\cdot \\frac{" + Vx + "}{" + Wx + "} = " + yKryds + "$$</p><canvas width='220' height='220' id='param1'></canvas>");
+    results.append("<h2>Parametrisering</h2><hr><p>$$\\binom{x}{y} = \\binom{" + Vx + "}{" + Vy + "}+t \\cdot \\binom{" + Wx + "}{" + Wy + "}$$</p><p>Y krydses i: $$" + Vy + "- \\left(" + Wy + "\\cdot \\frac{" + Vx + "}{" + Wx + "} \\right) = " + roundToTwo(yKryds) + "$$</p><canvas width='210' height='210' id='param1'></canvas>");
     canvasId = "param1";
-    translate_canvas(canvasId, 110,110);
-    scale_canvas(canvasId);
-    draw_axis(canvasId);
-    var u = get_scaled_vector(Math.abs(Vx) + Math.abs(Wx), Math.abs(Vy) + Math.abs(Wy));
-    var o = [Vx/u[2], Vy/u[2], Wx/u[2], Wy/u[2]];
+    prepare_canvas(canvasId);
+    u = get_scaled_vector(Math.abs(Vx) + Math.abs(Wx), Math.abs(Vy) + Math.abs(Wy));
+    o = [Vx/u[2], Vy/u[2], Wx/u[2], Wy/u[2]];
     var m = get_scaled_double_vector(o[2]*-1, o[3]*-1, o[2], o[3], 400);
-    /*console.log(m[0]);
-    console.log(m[1]);
-    console.log(m[2]);
-    console.log(m[3]);*/
     canvas_line(canvasId, o[0] + m[0], o[1] + m[1], o[0] + m[2], o[1] + m[3]);
     canvas_arrow(canvasId, 0,0, o[0], o[1], false, "#ff0000");
     canvas_arrow(canvasId, o[0], o[1], o[0] + o[2], o[1] + o[3], false, "#00ff00");
 
     // Dernæst med W som førstevektor
     yKryds = Wy-(Vy * (Wx/Vx));
-    console.log(yKryds);
-    results.append("<p>Parametisering: $$\\binom{x}{y} = \\binom{" + Wx + "}{" + Wy + "}+t \\cdot \\binom{" + Vx + "}{" + Vy + "}$$</p><p>Y krydses i: $$" + Wy + "-" + Vy + "\\cdot \\frac{" + Wx + "}{" + Vx + "} = " + yKryds + "$$</p><canvas width='220' height='220' id='param2'></canvas>");
+    results.append("<p>$$\\binom{x}{y} = \\binom{" + Wx + "}{" + Wy + "}+t \\cdot \\binom{" + Vx + "}{" + Vy + "}$$</p><p>Y krydses i: $$" + Wy + "- \\left(" + Vy + "\\cdot \\frac{" + Wx + "}{" + Vx + "} \\right) = " + roundToTwo(yKryds) + "$$</p><canvas width='210' height='210' id='param2'></canvas>");
     canvasId = "param2";
-    translate_canvas(canvasId, 110,110);
-    scale_canvas(canvasId);
-    draw_axis(canvasId);
+    prepare_canvas(canvasId);
     u = get_scaled_vector(Math.abs(Vx) + Math.abs(Wx), Math.abs(Vy) + Math.abs(Wy));
     o = [Wx/u[2], Wy/u[2], Vx/u[2], Vy/u[2]];
     m = get_scaled_double_vector(o[2]*-1, o[3]*-1, o[2], o[3], 400);
-    /*console.log(m[0]);
-    console.log(m[1]);
-    console.log(m[2]);
-    console.log(m[3]);*/
     canvas_line(canvasId, o[0] + m[0], o[1] + m[1], o[0] + m[2], o[1] + m[3]);
     canvas_arrow(canvasId, 0,0, o[0], o[1], false, "#ff0000");
     canvas_arrow(canvasId, o[0], o[1], o[0] + o[2], o[1] + o[3], false, "#00ff00");
+
+    // Drej vektoren V
+    results.append("<h2>Tværvektorer</h2><hr><p>Tværvektoren til \\( \\vec{V} \\) er:</p><p>$$\\hat{V} = \\binom{" + (Vy*-1) + "}{" + Vx + "}$$</p>");
+    results.append("<p>Tværvektoren til \\(\\hat{V}\\) er:</p><p>$$\\hat{\\hat{V}} = \\binom{" + (Vx*-1) + "}{" + (Vy*-1) + "}$$</p>");
+    results.append("<p>Tværvektoren til \\(\\hat{\\hat{V}}\\)</p><p>$$\\hat{\\hat{\\hat{V}}} = \\binom{" + (Vy) + "}{" + (Vx*-1) + "}$$</p>");
+    results.append("<canvas width='210' height='210' id='rotateVektorV'>Get a new browser</canvas>");
+    canvasId = "rotateVektorV";
+    prepare_canvas(canvasId);
+    W = get_scaled_vector(Vx, Vy, 80);
+    canvas_arrow(canvasId, 0,0, W[0], W[1], false, "#ff0000");
+    canvas_arrow(canvasId, 0,0, W[1]*-1, W[0], false, "#00ff00");
+    canvas_arrow(canvasId, 0,0, W[0]*-1, W[1]*-1, false, "#0000ff");
+    canvas_arrow(canvasId, 0,0, W[1], W[0]*-1, false, "#ffff00");
+
+    // Drej vektoren W
+    results.append("<p>Tværvektoren til \\(\\vec{W}\\) er:</p>$$\\hat{W} = \\binom{" + (Wy*-1) + "}{" + Wx + "}$$</p>");
+    results.append("<p>Tværvektoren til \\(\\hat{W}\\) er:</p><p>$$\\hat{\\hat{W}} = \\binom{" + (Wx*-1) + "}{" + (Wy*-1) + "}$$</p>");
+    results.append("<p>Tværvektoren til \\(\\hat{\\hat{W}}\\)</p><p>$$\\hat{\\hat{\\hat{W}}} = \\binom{" + (Wy) + "}{" + (Wx*-1) + "}$$</p>");
+    results.append("<canvas width='210' height='210' id='rotateVektorW'>Get a new browser</canvas>");
+    canvasId = "rotateVektorW";
+    prepare_canvas(canvasId);
+    W = get_scaled_vector(Wx, Wy, 80);
+    canvas_arrow(canvasId, 0,0, W[0], W[1], false, "#ff0000");
+    canvas_arrow(canvasId, 0,0, W[1]*-1, W[0], false, "#00ff00");
+    canvas_arrow(canvasId, 0,0, W[0]*-1, W[1]*-1, false, "#0000ff");
+    canvas_arrow(canvasId, 0,0, W[1], W[0]*-1, false, "#ffff00");
+
+    // Determinant
+    results.append("<h2>Determinant</h2><hr><p>Determinanten er: </p>");
+    var detVW = Vx*Wy - Wx*Vy;
+    results.append("$$ det(V, W) = \\begin{bmatrix} " + Vx + " & " + Wx + " \\\\ " + Vy + " & " + Wy + " \\end{bmatrix} = " + Vx + " \\cdot " + Wy + " - " + Vy + " \\cdot " + Wx + " = " + detVW + " $$");
+    var detWV = Wx*Vy - Vx*Wy;
+    results.append("$$ det(W, V) = \\begin{bmatrix} " + Wx + " & " + Vx + " \\\\ " + Wy + " & " + Vy + " \\end{bmatrix} = " + Wx + " \\cdot " + Vy + " - " + Vx + " \\cdot " + Wy + " = " + detWV + " $$");
+    results.append("<p>Det udspændte areal er: </p>");
+    results.append("$$|det(V, W)| = |" + detVW + "| = " + (Math.abs(detVW)) + "$$");
+    results.append("<canvas height='210' width='210' id='determinant'></canvas>");
+    canvasId = "determinant";
+    prepare_canvas(canvasId);
+    W = get_scaled_double_vector(Vx, Vy, Wx, Wy, 50);
+    canvas_arrow(canvasId, 0,0, W[0], W[1], false, "#ff0000");
+    canvas_arrow(canvasId, 0, 0, W[2], W[3], false, "#00ff00");
+    canvas_line(canvasId, W[0], W[1], W[0]+W[2], W[1]+W[3], false, "#00ff00");
+    canvas_line(canvasId, W[2], W[3], W[0]+W[2], W[1]+W[3], false, "#ff0000");
+    var c = document.getElementById(canvasId);
+    var ctx = c.getContext("2d");
+    ctx.beginPath();
+    ctx.lineTo(W[0], W[1]);
+    ctx.lineTo(W[0]+W[2], W[1]+W[3]);
+    ctx.lineTo(W[2], W[3]);
+    ctx.lineTo(0,0);
+    ctx.closePath();
+    ctx.fillStyle = "rgba(0,128,0,0.5)";
+    ctx.fill();
+
     // Formatér til matematik
     MathJax.Hub.Typeset();
 }
