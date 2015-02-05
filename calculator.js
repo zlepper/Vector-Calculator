@@ -166,8 +166,42 @@ function calculate() {
     prepare_canvas(canvasId);
     canvas_arrow(canvasId, 0, 0, W[0], W[1], false, "#ff0000");
     canvas_arrow(canvasId, 0, 0, W[2], W[3], false, "#00ff00");
-    var angleToDraw = Math.acos(Vx/VLength);
-    draw_arc(canvasId, 0, 0, 10, angleToDraw, getRadians(angle)+angleToDraw);
+
+    // vinkel fra (1,0) til V
+    var tmp1V = getDegrees(Math.asin(Vy/VLength));
+    if(Vx < 0 && Vy >= 0) {
+        tmp1V = getDegrees(Math.acos(Vx / (VLength)));
+    } else {
+        if(Vx < 0 && Vy < 0) {
+            tmp1V = getDegrees(Math.asin(-Vy/VLength)) - 180;
+        }
+    }
+    console.log(tmp1V);
+    var tmp1W = getDegrees(Math.asin(Wy/WLength));
+    if(Wx < 0 && Wy >= 0) {
+        tmp1W = getDegrees(Math.acos(Wx / (WLength)));
+    } else {
+        if(Wx < 0 && Wy < 0) {
+            tmp1W = getDegrees(Math.asin(-Wy / WLength)) - 180;
+        }
+    }
+    console.log(tmp1W);
+    //draw_arc(canvasId, 0,0,20, getRadians(0), getRadians(tmp1W));
+    if(Math.abs(tmp1V)+Math.abs(tmp1W) > 180) {
+        // Tegn i øverst højre
+        if(tmp1W < tmp1V) {
+            draw_arc(canvasId, 0, 0, 10, getRadians(tmp1W), getRadians(tmp1V))
+        } else {
+            draw_arc(canvasId, 0, 0, 10, getRadians(tmp1V), getRadians(tmp1W));
+        }
+    } else {
+        // Tegn i nederst venstre
+        if(tmp1V < tmp1W) {
+            draw_arc(canvasId, 0, 0, 10, getRadians(tmp1V), getRadians(tmp1W));
+        } else {
+            draw_arc(canvasId, 0, 0, 10, getRadians(tmp1W), getRadians(tmp1V))
+        }
+    }
 
 
 
@@ -280,7 +314,7 @@ function calculate() {
     ctx.lineTo(W[2], W[3]);
     ctx.lineTo(0,0);
     ctx.closePath();
-    ctx.fillStyle = "rgba(0,128,0,0.5)";
+    ctx.fillStyle = "rgba(96,96,128,0.5)";
     ctx.fill();
 
     // Formatér til matematik
